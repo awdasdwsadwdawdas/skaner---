@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bez Ruchu - Wyzwanie</title>
+</head>
+<body>
+  <h1>Nie ruszaj się przez 2 minuty!</h1>
+  <p id="status">Pozostały czas: <span id="time">120</span> sekund</p>
+
+  <script>
+    let countdown = 120; // Czas w sekundach
+    let interval;
+    let lastMotion = Date.now();
+
+    // Funkcja do resetowania licznika
+    function resetCountdown() {
+      countdown = 120;
+      document.getElementById("time").textContent = countdown;
+      lastMotion = Date.now();
+    }
+
+    // Funkcja odliczania
+    function startCountdown() {
+      interval = setInterval(() => {
+        const now = Date.now();
+        if (now - lastMotion > 1000) { // Jeśli minęła sekunda bez ruchu
+          countdown--;
+          if (countdown <= 0) {
+            clearInterval(interval);
+            alert("Udało się! Wytrzymałeś 2 minuty bez ruchu.");
+          }
+        } else {
+          resetCountdown();
+        }
+        document.getElementById("time").textContent = countdown;
+      }, 1000);
+    }
+
+    // Wykrywanie ruchu
+    window.addEventListener("devicemotion", (event) => {
+      const acc = event.acceleration;
+      if (acc.x > 0.5 || acc.y > 0.5 || acc.z > 0.5) {
+        resetCountdown();
+      }
+    });
+
+    // Start odliczania
+    startCountdown();
+  </script>
+</body>
+</html>
